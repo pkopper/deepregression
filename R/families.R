@@ -243,6 +243,7 @@ family_to_tfd <- function(family)
                      laplace = tfd_laplace,
                      log_normal = tfd_log_normal,
                      logistic = tfd_logistic,
+                     mse = tfd_mse,
                      multinomial = function(probs)
                        tfd_multinomial(total_count = 1L,
                                        probs = probs),
@@ -340,6 +341,7 @@ family_to_trafo <- function(family, add_const = 1e-8)
                                           function(x) tf$add(add_const, tfe(x))),
                        multinomial = list(function(x) tfsoft(x)),
                        multinoulli = list(function(x) x),
+                       mse = list(function(x) x),
                        pareto = list(function(x) tf$add(add_const, tfe(x)),
                                      function(x) add_const + tfe(-x)),
                        pareto_ls = list(function(x) tf$add(add_const, tfe(x)),
@@ -383,16 +385,9 @@ family_trafo_funs_special <- function(family, add_const = 1e-8)
 
       mu = tfe(tf_stride_cols(x,1))
       sig = tfe(tf_stride_cols(x,2))
-      # con = #tf$compat$v2$maximum(
-      #   tfrec(tfsq(sig))#,0 + add_const)
-      # rate = #tf$compat$v2$maximum(
-      #   tfrec(tfmult(tfsq(sig),mu))#,0 + add_const)
       sigsq = tfsq(sig)
-      con = tfsq(tfdiv(mu, sig + add_const))
-      rate = tfdiv(mu, sigsq + add_const)
-
-      # rate = tfrec(tfe(x[,2,drop=FALSE]))
-      # con = tfdiv(tfe(x[,1,drop=FALSE]), tfe(x[,1,drop=FALSE]))
+      con = tfrec(sigsq + add_const)
+      rate = tfrec(tfmult(mu, sigsq))
 
       return(list(concentration = con, rate = rate))
     },
@@ -498,5 +493,19 @@ tfd_zinb <- function(mu, r, probs)
                        tfd_deterministic(loc = mu * 0L)
                   ),
                 name="zinb")
+  )
+}
+
+#' For using mean squared error via TFP
+#' 
+#' @param mean parameter for the mean
+#' @details \code{deepregression} allows to train based on the
+#' MSE by using \code{loss = "mse"} as argument to \code{deepregression}.
+#' This tfd function just provides a dummy \code{family}
+#' 
+tfd_mse <- function(mean)
+{
+  return(
+    tfd_normal(loc = mean, scale = 1)
   )
 }

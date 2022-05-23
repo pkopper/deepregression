@@ -648,7 +648,7 @@ log_score <- function(
   x,
   data=NULL,
   this_y=NULL,
-  ind_fun = function(x) tfd_independent(x,1),
+  ind_fun = function(x) tfd_independent(x),
   convert_fun = as.matrix,
   summary_fun = function(x) x
 )
@@ -672,6 +672,9 @@ log_score <- function(
     
   if(is.null(this_y)){
     this_y <- x$init_params$y
+  }else{
+    if(is.null(dim(this_y)))
+      warning("log-score calculation requires this_y to be a matrix.")
   }
   
   return(summary_fun(convert_fun(
@@ -738,7 +741,7 @@ get_partial_effect <- function(object, names=NULL, return_matrix = FALSE,
     
     if(name=="(Intercept)") name <- "1"
     weights <- get_weight_by_name(object, name = name, param_nr = which_param, ...)
-    
+    weights <- object$init_params$parsed_formulas_contents[[which_param]][[w]]$coef(weights)
     pe_fun <- object$init_params$parsed_formulas_contents[[which_param]][[w]]$partial_effect
     if(is.null(pe_fun)){
       #warning("Specified term does not have a partial effect function. Returning weights.")

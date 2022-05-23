@@ -27,7 +27,31 @@ The requirements are given in the `DESCRIPTION`. If you load the package manuall
   - tensorflow
   - tfprobability
 
-If you set up a Python environment for the first time, install `reticulate` and run the `check_and_install` function from the `deepregression` package. This tries to install miniconda, TF 2.5.0rc0, TFP 0.12 and keras 2.5.0rc0, which seems to be the most reliable setup for `deepregression` at the moment.
+If you set up a Python environment for the first time, install `reticulate` and run the `check_and_install` function from the `deepregression` package. This tries to install miniconda, TF 2.5.0, TFP 0.12 and keras 2.5.0, which seems to be the most reliable setup for `deepregression` at the moment.
+
+# Troubleshooting
+
+## Python Path and Conda / Virtual Environment
+
+If R does not find Python or installed Python packages, check if the Python version and environment in R is set to the correct path. You can find your Python installations e.g. [like this](https://stackoverflow.com/questions/30464980/how-to-check-all-versions-of-python-installed-on-osx-and-centos). To check if all the modules have been installed correctly -- just as a sanity check, because you can do the installation of modules also from inside R using `reticulate::py_install` -- you can use `pip freeze` other [similar approaches](https://stackoverflow.com/questions/739993/how-can-i-get-a-list-of-locally-installed-python-modules). Finally, to check whether R also uses the Python version and environment you have installed all those modules into, you can force R to use a specific Python version using
+
+```r
+reticulate::use_python("path/to/python/path", required = TRUE)
+```
+
+directly after starting your R session. Similar, you can force the usage of a virtual environment
+
+```r
+reticulate::use_virtualenv("path/to/venv", required = TRUE)
+```
+
+or Conda environment
+
+```r
+reticulate::use_condaenv("path/to/condaenv", required = TRUE)
+```
+
+again, directly after starting your R session.
 
 # How to cite this?
 
@@ -43,12 +67,13 @@ For the methodology, please cite the following preprint:
 For the software, please cite:
 
     @article{rugamer2021deepregression,
-      title={deepregression: a Flexible Neural Network Framework for Semi-Structured Deep Distributional Regression}, 
-      author={David R{\"u}gamer and Ruolin Shen and Christina Bukas and Lisa Barros de Andrade e Sousa and Dominik Thalmeier and Nadja Klein and Chris Kolb and Florian Pfisterer and Philipp Kopper and Bernd Bischl and Christian L. M{\"u}ller},
-      year={2021},
+      title={deepregression: a Flexible Neural Network Framework for Semi-Structured Deep Distributional Regression},
+      author={David \textbf{R{\"u}gamer} and Chris Kolb and Cornelius Fritz and Florian Pfisterer and Philipp Kopper and Bernd Bischl and Ruolin Shen and Christina Bukas and Lisa Barros de Andrade e Sousa and Dominik Thalmeier and Philipp Baumann and Lucas Kook and Nadja Klein and Christian L. M{\"u}ller},
+      year={2022},
       eprint={2104.02705},
       archivePrefix={arXiv},
-      journal={arXiv preprint arXiv:2104.02705}
+      journal={Journal of Statistical Software},
+      note={Provisionally Accepted}
     }
 
 # How to use this?
@@ -73,13 +98,11 @@ The following works are based on the ideas implemented in this package:
 
 Many thanks to following people for helpful comments, issues, suggestions for improvements and discussions: 
 
-* Philipp Baumann
 * Andreas Bender
 * Christina Bukas
+* Oliver Duerr
 * Patrick Kaiser
 * Nadja Klein
-* Chris Kolb
-* Lucas Kook
 * Philipp Kopper
 * Christian Mueller
 * Julian Raith

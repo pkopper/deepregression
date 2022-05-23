@@ -20,6 +20,7 @@ deepregression(
   penalty_options = penalty_control(),
   orthog_options = orthog_control(),
   weight_options = weight_control(),
+  output_dim = 1L,
   verbose = FALSE,
   ...
 )
@@ -43,7 +44,7 @@ this network.}
 See the examples for more details.}
 
 \item{family}{a character specifying the distribution. For information on
-possible distribution and parameters, see \code{\link{make_tfd_dist}}. Can also 
+possible distribution and parameters, see \code{\link{make_tfd_dist}}. Can also
 be a custom distribution.}
 
 \item{data}{data.frame or named list with input features}
@@ -71,6 +72,8 @@ Can have an attribute \code{"controls"} to pass additional controls}
 \item{orthog_options}{options for the orthgonalization defined by \code{\link{orthog_control}}}
 
 \item{weight_options}{options for layer weights defined by \code{\link{weight_control}}}
+
+\item{output_dim}{dimension of the output, per default 1L}
 
 \item{verbose}{logical; whether to print progress of model initialization to console}
 
@@ -114,7 +117,7 @@ mod \%>\% plot()
 }
 
 mod <- deepregression(
-  list_of_formulas = list(loc = ~ 1 + s(xa) + x1, scale = ~ 1, 
+  list_of_formulas = list(loc = ~ 1 + s(xa) + x1, scale = ~ 1,
                           dummy = ~ -1 + deep_model(x1,x2,x3) \%OZ\% 1),
   data = data, y = y,
   list_of_deep_models = list(deep_model = deep_model),
